@@ -10,7 +10,7 @@ class TestLongCalculation(unittest.TestCase):
     def test_valid_param(self):
         response = client.get("/long-calculation?param=10")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"result": "3628800"})
+        self.assertEqual(response.json(), "3628800")
 
     def test_negative_param(self):
         response = client.get("/long-calculation?param=-10")
