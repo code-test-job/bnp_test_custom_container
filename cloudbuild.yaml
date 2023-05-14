@@ -1,0 +1,62 @@
+steps:
+- id: 'create_artifact_registry_repository'
+  name: 'gcr.io/cloud-builders/gcloud'
+  args:
+    [
+      'artifacts', 'repositories', 'create',
+      '$_SOURCE_PROJECT', 
+      '--location="$_LOCATION"', 
+      '--repository-format="$_REPOSITORY_FORMAT"', 
+      '--description="$_DESCRIPTION_ARTIFACT_REGISTRY"'
+    ]
+  waitFor:
+    ['-']
+
+#gcloud artifacts repositories create "$_SOURCE_PROJECT" --location="$_LOCATION" --repository-format="$_REPOSITORY_FORMAT" 
+
+- id: 'build_container'
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+    [
+      'build', '-t', '${_IMAGE_NAME}',
+      '--build-arg', 'PYTHON_ENV="${_PYTHON_ENV}"',
+      '--build-arg', 'API_USERNAME="admin',
+      '--build-arg', 'API_PASSWORD="mot_de_passe_fort"',
+      '.'
+    ]
+  waitFor:
+    ['create_artifact_registry_repository']
+
+
+- id: 'push_container'
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+    [
+      'push',
+      '${_IMAGE_NAME}'
+    ]
+  waitFor:
+    ['build_container']
+
+images:
+   [
+     '${_IMAGE_NAME}'
+   ]
+
+substitutions:
+  _LOCATION: 'us-east1'                     # DO NOT CHANGE
+  _SOURCE_PROJECT: 'mlops-custom-container' # DO NOT CHANGE
+  _IMAGE_NAME: '${_LOCATION}-docker.pkg.dev/${PROJECT_ID}/mlops-custom-container/${REPO_NAME}:latest' # DO NOT CHANGE
+  _REPOSITORY_FORMAT: 'Docker'
+  _DESCRIPTION_ARTIFACT_REGISTRY: 'Container for BNP test'
+
+timeout: 86400s
+options:
+  logging: CLOUD_LOGGING_ONLY
+  dynamic_substitutions: true
+
+# ARTIFACT REGISTRY
+#_REPOSITORY_FORMAT="Docker"
+#_DESCRIPTION_ARTIFACT_REGISTRY="Repository to Custom Container Images to be using in Vertex AI on Predict Mood"
+
+
