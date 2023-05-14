@@ -1,7 +1,7 @@
 steps:
 - id: 'create_artifact_registry_repository'
   name: 'gcr.io/cloud-builders/gcloud'
-args:
+  args:
   - 'artifacts'
   - 'repositories'
   - 'create'
