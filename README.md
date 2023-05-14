@@ -5,7 +5,30 @@ Custom Container -
 
 *OBS1 :* Lisez attentivement le fichier README.md;
 
-*OBS2 :* Je ne suis pas très fort en Nginx;
+<h1>Comment ça marche?</h1>
+
+Vertex AI a généralement des images prédéfinies, comme les images scikit-learn, tensorflow et xgboost. Ici, nous traiterons "long_calculation" comme s'il s'agissait d'un modèle et créerons un conteneur personnalisé pour celui-ci.
+
+L'architecture de ce microservice est la suivante: 
+
+<div align="center">
+  <img src="img/custom_container_arch.png">
+</div>
+
+L'idée est de créer un container personnalisé qui sert de point d'accès pour Cloud Storage (où le modèle .pkl serait stocké s'il existait) et pour Vertex AI (où le modèle sera déployé dans un autre microservice). Les instructions de déploiement sont présentes dans cloudbuild.yaml. 
+
+Le push vers la branche déclenche l'exécution des instructions dans cloudbuild.yaml, comme on peut voir ci-dessous: 
+
+<div align="center">
+  <img src="img/cloud_build.png">
+</div>
+
+Tout est vert, c'est-à-dire, tous les instructions ont été exécutées avec succès, c'est pour cela qu'on peut donc voir l'image sur Artifact Registry: 
+
+<div align="center">
+  <img src="img/artifact_registry.png">
+</div>
+
 
 <h1>Structure des dossiers</h1>
 
@@ -22,6 +45,7 @@ Custom Container -
 <h2>Dossiers|Packages</h2>
 
 - `app`: APP pour l'équipe A;
+- `img`: Images;
 - `tests`: Package avec les fonctions de test;
 
 
@@ -34,7 +58,7 @@ Custom Container -
 
 <h1>Services GCP utilisées</h1>
 
+- [x] Source Repository 
+- [x] Cloud Build
 - [x] Artifact Registry
 
-
-<h1>Si vous avez des questions, n'hésitez pas à envoyer un commentaire</h1>
