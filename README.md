@@ -1,15 +1,11 @@
 # BNP PARIBAS - TEST
 Bonjour!
 
-Custom Container -
-
 *OBS1 :* Lisez attentivement le fichier README.md;
 
-<h1>Comment ça marche?</h1>
+<h1>Comment marche cette solution?</h1>
 
-Vertex AI a généralement des images prédéfinies, comme les images scikit-learn, tensorflow et xgboost. Ici, nous traiterons "long_calculation" comme s'il s'agissait d'un modèle et créerons un conteneur personnalisé pour celui-ci.
-
-L'architecture de ce microservice est la suivante: 
+Vertex AI a généralement des images prédéfinies, comme les images scikit-learn, tensorflow et xgboost. Ici, nous traiterons "long_calculation" comme s'il s'agissait d'un modèle et créerons un container personnalisé pour celui-ci. L'architecture de ce microservice est la suivante: 
 
 <div align="center">
   <img src="img/custom_container_arch.png">
@@ -23,12 +19,15 @@ Le push vers la branche déclenche l'exécution des instructions dans cloudbuild
   <img src="img/cloud_build.png">
 </div>
 
-Tout est vert, c'est-à-dire, tous les instructions ont été exécutées avec succès, c'est pour cela qu'on peut donc voir l'image sur Artifact Registry: 
+Tout est vert, c'est-à-dire, toutes les instructions ont été exécuté avec succès, c'est pour cela qu'on peut donc voir l'image sur Artifact Registry: 
 
 <div align="center">
   <img src="img/artifact_registry.png">
 </div>
 
+Certaines modifications ont été apporté dans app/main.py, parmi lesquelles la route heath_check et la route predict (Routes obligatoires pour l'intégration des containers avec Vertex AI). Désormais, les problèmes de l'équipe 1 et de l'équipe 2 peuvent être résolus d'une seule manière, puisque le endpoint pourra recevoir une seule valeur, ou une liste de valeurs, n'ayant plus besoin de la sdk avec un for-loop de l'équipe 2.
+
+À partir de maintenant, nous avons un container en cloud, la prochaine étape consiste à déployer le modèle + endpoint dans un autre microservice.
 
 <h1>Structure des dossiers</h1>
 
@@ -45,7 +44,7 @@ Tout est vert, c'est-à-dire, tous les instructions ont été exécutées avec s
 <h2>Dossiers|Packages</h2>
 
 - `app`: APP pour l'équipe A;
-- `img`: Images;
+- `img`: Images pour le ReadME.md;
 - `tests`: Package avec les fonctions de test;
 
 
