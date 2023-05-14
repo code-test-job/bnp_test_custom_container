@@ -1,14 +1,14 @@
 steps:
 - id: 'create_artifact_registry_repository'
   name: 'gcr.io/cloud-builders/gcloud'
-  args:
-    [
-      'artifacts', 'repositories', 'create',
-      '$_SOURCE_PROJECT', 
-      '--location="$_LOCATION"', 
-      '--repository-format="$_REPOSITORY_FORMAT"', 
-      '--description="$_DESCRIPTION_ARTIFACT_REGISTRY"'
-    ]
+args:
+  - 'artifacts'
+  - 'repositories'
+  - 'create'
+  - '$_SOURCE_PROJECT'
+  - '--location=${_LOCATION}'
+  - '--repository-format=${_REPOSITORY_FORMAT}'
+  - '--description=${_DESCRIPTION_ARTIFACT_REGISTRY}'
   waitFor:
     ['-']
 
@@ -17,26 +17,29 @@ steps:
 - id: 'build_container'
   name: 'gcr.io/cloud-builders/docker'
   args:
-    [
-      'build', '-t', '${_IMAGE_NAME}',
-      '--build-arg', 'PYTHON_ENV="${_PYTHON_ENV}"',
-      '--build-arg', 'API_USERNAME="admin',
-      '--build-arg', 'API_PASSWORD="mot_de_passe_fort"',
-      '.'
-    ]
+    - 'build'
+    - '-t'
+    - '${_IMAGE_NAME}'
+    - '--build-arg'
+    - 'PYTHON_ENV=${_PYTHON_ENV}'
+    - '--build-arg'
+    - 'API_USERNAME=admin'
+    - '--build-arg'
+    - 'API_PASSWORD=mot_de_passe_fort'
+    - '.'
   waitFor:
-    ['create_artifact_registry_repository']
+    - 'create_artifact_registry_repository'
+
 
 
 - id: 'push_container'
   name: 'gcr.io/cloud-builders/docker'
   args:
-    [
-      'push',
-      '${_IMAGE_NAME}'
-    ]
+    - 'push'
+    - '${_IMAGE_NAME}'
   waitFor:
-    ['build_container']
+    - 'build_container'
+
 
 images:
    [
@@ -54,9 +57,5 @@ timeout: 86400s
 options:
   logging: CLOUD_LOGGING_ONLY
   dynamic_substitutions: true
-
-# ARTIFACT REGISTRY
-#_REPOSITORY_FORMAT="Docker"
-#_DESCRIPTION_ARTIFACT_REGISTRY="Repository to Custom Container Images to be using in Vertex AI on Predict Mood"
 
 
